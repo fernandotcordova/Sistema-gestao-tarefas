@@ -44,7 +44,7 @@ public class TelaRemover extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Adicionar");
+        jLabel3.setText("Remover");
 
         jLabel1.setText("Digite o nome da tarefa");
 
