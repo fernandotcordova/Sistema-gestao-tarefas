@@ -6,12 +6,30 @@ public class Tarefa {
     private String nome;
     private int dataDeVencimento; 
     private boolean concluida;
+    private int id;
 
-    public Tarefa(String descricao, String nome, int dataDeVencimento) {
+    public Tarefa(String descricao, String nome, int dataDeVencimento, boolean concluida) {
         this.descricao = descricao;
         this.nome = nome;
         this.dataDeVencimento = dataDeVencimento;
+        this.concluida = concluida;
     }
+
+    public Tarefa(String descricao, String nome, int dataDeVencimento, boolean concluida, int id) {
+        this.descricao = descricao;
+        this.nome = nome;
+        this.dataDeVencimento = dataDeVencimento;
+        this.concluida = concluida;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }    
 
     public boolean isConcluida() {
         return concluida;
@@ -44,9 +62,6 @@ public class Tarefa {
     public void setDataDeVencimento(int dataDeVencimento) {
         this.dataDeVencimento = dataDeVencimento;
     }
-    
-    
-    
 
     @Override
     public String toString() {

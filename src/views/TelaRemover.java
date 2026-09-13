@@ -113,8 +113,23 @@ public class TelaRemover extends javax.swing.JFrame {
             return;
         }
         
-        tarefaDAO.removerTarefa(nome);
-        TelaListar telaListar = new TelaListar(this.tarefaDAO);
+        Tarefa tarefaRemover = this.tarefaDAO.buscarTarefa(nome);
+        System.out.println(tarefaRemover);
+        
+        if(tarefaRemover == null){
+            TelaErro telaErro = new TelaErro("Nenhuma tarefa encontrada=---");
+            return;
+        }
+        
+        boolean removido = this.tarefaDAO.removerTarefa(tarefaRemover);
+        
+        if(removido){
+            TelaListar telaListar = new TelaListar(this.tarefaDAO);
+            this.dispose();
+            return;
+        } else{
+            TelaErro telaErro = new TelaErro("Erro ao tentar remover tarefa---");
+        }
     }//GEN-LAST:event_enviarActionPerformed
 
     /**

@@ -4,24 +4,19 @@
  */
 package views;
 
-import java.util.Date;
-import models.Tarefa;
 import dao.TarefaDAO;
+import models.Tarefa;
 
 /**
  *
  * @author fernando-cordova
  */
-public class TelaAdicionar extends javax.swing.JFrame {
-
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaAdicionar.class.getName());
-    private static TarefaDAO tarefaDAO = new TarefaDAO();
+public class TelaEditar extends javax.swing.JFrame {
     
-    /**
-     * Creates new form TelaAdicionar
-     */
-    public TelaAdicionar(TarefaDAO tarefaDAO) {
-        this.tarefaDAO = tarefaDAO;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaEditar.class.getName());
+    TarefaDAO tarefaDAO = new TarefaDAO();
+        
+    public TelaEditar(TarefaDAO tarefaDAO) {
         initComponents();
         setVisible(true);
     }
@@ -35,30 +30,34 @@ public class TelaAdicionar extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        txtNome = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        novoNome = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        novaDescricao = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtDescricao = new javax.swing.JTextField();
+        DataVencimento = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtDataVencimento = new javax.swing.JTextField();
+        nomeAtual = new javax.swing.JTextField();
         enviar = new javax.swing.JButton();
 
-        jLabel2.setText("jLabel2");
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel3.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Adicionar");
+        jLabel1.setFont(new java.awt.Font("Liberation Sans", 0, 18)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Tela de edição");
 
-        jLabel1.setText("Digite o nome da tarefa");
+        jLabel2.setText("Novo nome");
 
-        jLabel4.setText("Descrição da tarefa");
+        jLabel3.setText("Nova descriço ");
 
-        jLabel5.setText("Dia de vencimento");
+        jLabel4.setText("Data de vencimento");
+
+        jLabel5.setText("Nome atual");
 
         enviar.setText("Enviar");
         enviar.addActionListener(this::enviarActionPerformed);
@@ -68,30 +67,33 @@ public class TelaAdicionar extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(novaDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(novoNome))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtDataVencimento))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtDescricao))))
-                        .addGap(0, 66, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(nomeAtual))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(DataVencimento, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
+                        .addContainerGap())))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(163, 163, 163)
+                .addGap(135, 135, 135)
                 .addComponent(enviar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -99,22 +101,26 @@ public class TelaAdicionar extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
+                .addComponent(jLabel1)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(nomeAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2)
+                    .addComponent(novoNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(novaDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(55, 55, 55)
+                    .addComponent(DataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(enviar)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addGap(31, 31, 31))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -138,33 +144,17 @@ public class TelaAdicionar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarActionPerformed
+        String nome = nomeAtual.getText();
+        Tarefa tarefaAtualizar = tarefaDAO.buscarTarefa(nome);
         
-        String nome = txtNome.getText().trim();
-        String descricao = txtDescricao.getText().trim();
-        int dia = 0;
-        boolean concluida = false;
+        System.out.println("Resultado da busca: " +tarefaAtualizar);
         
-        if(nome.isEmpty() || descricao.isEmpty()){
-            TelaErro telaErro = new TelaErro("O nome e a descrição não podem estar vazios");
+        if(tarefaAtualizar == null){
+            TelaErro telaErro = new TelaErro("Nenhuma tarefa encontrada");
             return;
         }
         
-        try{
-            dia = Integer.parseInt(txtDataVencimento.getText().trim());
-            
-            if(dia <= 0){
-                TelaErro telaErro = new TelaErro("O dia do vencimento deve ser maior do que zero!!");
-                return;
-            }
-        } catch(NumberFormatException e){
-            TelaErro telaErro = new TelaErro("Digite apenas números no campo de dia");
-        }
-        
-        Tarefa tarefa = new Tarefa(descricao, nome, dia, concluida);
-
-
-        this.tarefaDAO.adicionarTarefa(tarefa);
-        TelaListar telaListar = new TelaListar(this.tarefaDAO);
+        tarefaDAO.atualizarTarefa(tarefaAtualizar);
     }//GEN-LAST:event_enviarActionPerformed
 
     /**
@@ -192,15 +182,17 @@ public class TelaAdicionar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField DataVencimento;
     private javax.swing.JButton enviar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtDataVencimento;
-    private javax.swing.JTextField txtDescricao;
-    private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField nomeAtual;
+    private javax.swing.JTextField novaDescricao;
+    private javax.swing.JTextField novoNome;
     // End of variables declaration//GEN-END:variables
 }

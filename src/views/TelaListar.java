@@ -1,6 +1,9 @@
 package views;
 
 import dao.TarefaDAO;
+import java.util.List;
+import models.Tarefa;
+import java.util.stream.Collectors;
 
 public class TelaListar extends javax.swing.JFrame {
     
@@ -10,12 +13,21 @@ public class TelaListar extends javax.swing.JFrame {
         initComponents();
         
         try{
-            txtArea.setText(tarefaDAO.listarTarefas());
+            List<Tarefa> lista = tarefaDAO.listarTarefas();
+            if(lista.isEmpty()){
+                txtArea.setText("Nehuma tarefa!");
+            } else{
+                String textoFormatado = lista.stream()
+                        .map(Tarefa::toString)
+                        .collect(Collectors.joining("\n"));
+                txtArea.setText(textoFormatado);
+            }
         } catch(Exception e){
            TelaErro telaErro = new TelaErro("Erro! Não há tarefas adicionadas");
         }
         
         setVisible(true);
+        
     }
 
   

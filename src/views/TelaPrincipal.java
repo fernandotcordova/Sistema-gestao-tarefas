@@ -49,6 +49,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         adicionar.addActionListener(this::adicionarActionPerformed);
 
         editar.setText("Editar");
+        editar.addActionListener(this::editarActionPerformed);
 
         remover.setText("Remover");
         remover.addActionListener(this::removerActionPerformed);
@@ -120,8 +121,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_adicionarActionPerformed
 
     private void listaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listaActionPerformed
-        new TelaListar(tarefaDAO);
+        TelaListar telaListar = new TelaListar(this.tarefaDAO);
     }//GEN-LAST:event_listaActionPerformed
+
+    private void editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarActionPerformed
+       TelaEditar telaEditar = new  TelaEditar(this.tarefaDAO);
+    }//GEN-LAST:event_editarActionPerformed
 
     /**
      * @param args the command line arguments

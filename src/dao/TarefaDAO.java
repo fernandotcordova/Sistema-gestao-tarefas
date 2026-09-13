@@ -1,9 +1,12 @@
 package dao;
 
+import java.util.List;
 import models.Tarefa;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class TarefaDAO {
-    
+
     private Tarefa[] tarefasCadastradas;
     private int quantidadeTarefas;
     private static final int CAPACIDADE_INICIAL = 10;
@@ -11,174 +14,205 @@ public class TarefaDAO {
     public TarefaDAO() {
         this.tarefasCadastradas = new Tarefa[CAPACIDADE_INICIAL];
         this.quantidadeTarefas = 0;
-        
-        //pre cadastro
+
     }
-    
-    private void modificarVetor(){
-        if(quantidadeTarefas == tarefasCadastradas.length){
-            Tarefa[] novoVetor = new Tarefa[tarefasCadastradas.length *2];
-            
-            System.arraycopy(tarefasCadastradas, 0, novoVetor, 0, tarefasCadastradas.length);
-            
-            this.tarefasCadastradas = novoVetor;
-        }
-    }
-    
-    public void adicionarTarefa(Tarefa novaTarefa){
-        
-        modificarVetor();
-        tarefasCadastradas[quantidadeTarefas] = novaTarefa;
-        quantidadeTarefas++;
-    }
-    
-    public String listarTarefas(){
-        
-        String resultado = "";
-        
-        if(quantidadeTarefas == 0){
-            resultado += "Nenhuma tarefa cadastrada.\n";
-        } else{
-            resultado += "---Lista de tarefas cadastradas---\n";
-            for(int i = 0; i < quantidadeTarefas; i++){
-                if(tarefasCadastradas[i] != null){
-                    resultado += (i+1) + "." + tarefasCadastradas[i].toString() + "\n";
-                }
-                
-            }
-        }
-        return resultado;
-    }
-    
-    public boolean marcarComoConcluida(String nome){
-        
-        String nomeTratado = nome.trim();
-        
-        for(int i = 0; i< quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && tarefasCadastradas[i].getNome().equalsIgnoreCase(nomeTratado)){
-                tarefasCadastradas[i].setConcluida(true);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    public boolean atualizarTarefa(String nome, String novoNome, String novaDescricao, String novaDataVencimento){
-        
-        String nomeTratado = nome.trim();
-        
-        
-        for(int i = 0; i < quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && tarefasCadastradas[i].getNome().equalsIgnoreCase(nomeTratado)){
-                if(novoNome != null && !novoNome.trim().isEmpty()){
-                    tarefasCadastradas[i].setNome(novoNome.trim());
-                }
-                
-                if(novaDescricao != null && !novaDescricao.trim().isEmpty()){
-                    tarefasCadastradas[i].setDescricao(novaDescricao.trim());
-                }
-                
-                if(novaDataVencimento != null && !novaDataVencimento.trim().isEmpty()){
-                    try{
-                        int dataConvertida = Integer.parseInt(novaDataVencimento.trim());
-                        tarefasCadastradas[i].setDataDeVencimento(dataConvertida);
-                    } catch(NumberFormatException e){
-                        System.err.println("Aviso: Data de vencimento" + novaDataVencimento + "incorreta.");
-                    }
-                }
-                
-                return true;
-            }
-        }
-        
-        return false;
-            }
-    
-    public String removerTarefa(String nomeParaRemover){
-        
-        String nomeParaRemoverTratado = nomeParaRemover.trim();
-        int indiceParaRemover = -1;
-        
-        for(int i = 0; i < quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && tarefasCadastradas[i].getNome().equalsIgnoreCase(nomeParaRemoverTratado)){
-                indiceParaRemover = i;
-                break;
-            }
-        }
-        
-        if(indiceParaRemover != -1){
-            for(int i = indiceParaRemover; i < quantidadeTarefas - 1; i++){
-                tarefasCadastradas[i] = tarefasCadastradas[i + 1]; 
-            }
-            
-            tarefasCadastradas[quantidadeTarefas - 1] = null;
-            
-            quantidadeTarefas--;
-            
-            return "Tarefa: " + nomeParaRemover + "com sucesso";
-        } else{
-            return "Erro: Tarefa" + nomeParaRemover + "nao foi encontrado";
+
+    public void adicionarTarefa(Tarefa novaTarefa) {
+
+        String sql = """
+                     INSERT INTO tarefa (descricao, nome, dataVencimento, concluida) 
+                     VALUES (?, ?, ?, ?);
+                     """;
+
+        try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, novaTarefa.getDescricao());
+            stmt.setString(2, novaTarefa.getNome());
+            stmt.setInt(3, novaTarefa.getDataDeVencimento());
+            stmt.setBoolean(4, novaTarefa.isConcluida());
+
+            stmt.executeUpdate();
+
+            System.out.println("Tarefa adicionada com sucesso!");
+        } catch (Exception e) {
+            System.out.println("Erro: " + e);
         }
     }
-    
-    public String buscarTarefa(String nome){
-        
-        String nomeTratado = nome.trim();
-        
-        for(int i = 0; i < quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && tarefasCadastradas[i].getNome().equalsIgnoreCase(nomeTratado)){
-                return tarefasCadastradas[i].toString();
+
+    public List<Tarefa> listarTarefas() {
+
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        String sql = "SELECT nome, descricao, dataVencimento, concluida FROM tarefa";
+
+        try (Connection conn = Conexao.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                int dataVencimento = rs.getInt("dataVencimento");
+                String nome = rs.getString("nome");
+                String descricao = rs.getString("descricao");
+                boolean concluida = rs.getBoolean("concluida");
+
+                tarefas.add(new Tarefa(descricao, nome, dataVencimento, concluida));
             }
-        }
-        
-        return "Nao foi possivel achar essa tarefa com o nome: " + nome;
-    }
-    
-    public String listarTarefasConcluidas(){
-        String resultado = "";
-        
-        int contadorTarefasConcluidas = 0;
-        
-        resultado += "---Lista de tarefas concluidas---\n";
-        
-        for(int i = 0; i < quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && tarefasCadastradas[i].isConcluida()){
-                resultado += (contadorTarefasConcluidas + 1) + "." + tarefasCadastradas[i].toString() + "\n";
-                contadorTarefasConcluidas++;
-            }
-        }
-        
-        if(contadorTarefasConcluidas == 0){
-            resultado += "Nenhuma tarefa concluida cadastrada\n";
-        }
-        
-        return resultado;
-    }
-    
-    public String listarTarefasPendentes(){
-        
-        String resultado = "";
-        
-        int contadorTarefasPendentes = 0;
-        
-        resultado += "Lista de tarefas concluidas---\n";
-        
-        for(int i = 0; i < quantidadeTarefas; i++){
-            if(tarefasCadastradas[i] != null && !tarefasCadastradas[i].isConcluida()){
-                resultado += (contadorTarefasPendentes + 1) + "." + tarefasCadastradas[i].toString() + "\n";
-                contadorTarefasPendentes++;
-            }
-        }
-        
-        if(contadorTarefasPendentes == 0){
-            resultado += "Nenhuma tarefa pendente cadastrada\n";
-        }
-        
-        return resultado;
-    }
-    
-    
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar: " + e.getMessage());
         }
 
+        return tarefas;
+    }
 
+    public boolean marcarComoConcluida(Tarefa tarefa) {
+
+        String sql = "UPDATE tarefas SET concluida = ? WHERE id = ?";
+
+        try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setBoolean(1, tarefa.isConcluida());
+            stmt.setInt(2, tarefa.getId());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao marcar tarefa como concluída");
+            return false;
+        }
+    }
+
+    public boolean atualizarTarefa(Tarefa tarefa) {
+
+        if(tarefa == null || tarefa.getId() <= 0){
+            System.err.println("Tarefa inválida ou sem id");
+            return false;
+        }
+        
+        String sql = "UPDATE tarefa SET nome = ?, descricao = ?, dataVencimento = ?, concluida = ? WHERE id = ?";
+
+        try (Connection conn = Conexao.getConnection(); 
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, tarefa.getNome());
+            stmt.setString(2, tarefa.getDescricao());
+            stmt.setInt(3, tarefa.getDataDeVencimento());
+            stmt.setBoolean(4, tarefa.isConcluida());
+            stmt.setInt(5, tarefa.getId());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar tarefa: " + e.getMessage());
+            return false;
+        }
+
+    }
+
+    public boolean removerTarefa(Tarefa tarefa) {
+
+        if (tarefa == null || tarefa.getId() <= 0) {
+            System.err.println("ID da tarefa inválido: " + (tarefa!= null ? tarefa.getId() : "null"));
+            return false;
+        }
+
+        String sql = "DELETE FROM tarefa WHERE id = ?";
+
+        try (Connection conn = Conexao.getConnection(); 
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, tarefa.getId());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover tarefa: " + e.getMessage());
+            return false;
+        }
+        
+        
+    }
+
+    public Tarefa buscarTarefa(String nome) {
+
+        if(nome == null || nome.trim().isEmpty()){
+            System.out.println("Nome nulo ou vazio");
+            return null;
+        }
+        
+        String sql = "SELECT * FROM tarefa WHERE LOWER(nome) = LOWER(?)";
+
+        try (Connection conn = Conexao.getConnection(); 
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nome.trim());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Tarefa tarefa = new Tarefa(
+                        rs.getString("descricao"), 
+                        rs.getString("nome"), 
+                        rs.getInt("datavencimento"), 
+                        rs.getBoolean("concluida"),
+                        rs.getInt("id")
+                );
+                
+                System.out.println(tarefa);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar tarefa: " + e.getMessage());
+        }
+
+        return null;
+
+    }
+
+    public List<Tarefa> listarTarefasConcluidas() throws SQLException {
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        String sql = "SELECT * FROM tarefas WHERE 'concluida' = ?";
+
+        try (Connection conn = Conexao.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setBoolean(1, true);
+            while (rs.next()) {
+                int dataVencimento = rs.getInt("dataVencimento");
+                String nome = rs.getString("nome");
+                String descricao = rs.getString("descricao");
+                boolean concluida = rs.getBoolean("concluida");
+
+                tarefas.add(new Tarefa(descricao, nome, dataVencimento, concluida));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar: " + e.getMessage());
+        }
+
+        return tarefas;
+
+    }
+
+    public List<Tarefa> listarTarefasPendentes() {
+
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        String sql = "SELECT * FROM tarefas WHERE 'concluida' = ?";
+
+        try (Connection conn = Conexao.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setBoolean(1, false);
+            while (rs.next()) {
+                int dataVencimento = rs.getInt("dataVencimento");
+                String nome = rs.getString("nome");
+                String descricao = rs.getString("descricao");
+                boolean concluida = rs.getBoolean("concluida");
+
+                tarefas.add(new Tarefa(descricao, nome, dataVencimento, concluida));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar: " + e.getMessage());
+        }
+
+        return tarefas;
+    }
+
+}
